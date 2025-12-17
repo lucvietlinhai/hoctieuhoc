@@ -2,7 +2,7 @@ import React, { useEffect } from 'react';
 import confetti from 'canvas-confetti';
 import { StudySessionState } from '../types';
 import { Button } from './Button';
-import { RefreshCcw, Home, BookOpen } from 'lucide-react';
+import { RefreshCcw, Home, BookOpen, Clock } from 'lucide-react';
 import { motion } from 'framer-motion';
 
 interface ResultsProps {
@@ -43,6 +43,14 @@ export const Results: React.FC<ResultsProps> = ({ state, onRetry, onHome, onRetr
 
   const score = Math.round((state.correct.length / (state.correct.length + state.incorrect.length)) * 100);
 
+  const formatTime = (ms?: number) => {
+    if (!ms) return "0:00";
+    const totalSeconds = Math.floor(ms / 1000);
+    const minutes = Math.floor(totalSeconds / 60);
+    const seconds = totalSeconds % 60;
+    return `${minutes} phút ${seconds} giây`;
+  };
+
   return (
     <div className="flex flex-col items-center w-full max-w-2xl mx-auto p-4">
       <motion.div 
@@ -72,6 +80,13 @@ export const Results: React.FC<ResultsProps> = ({ state, onRetry, onHome, onRetr
              <span className="text-sm text-gray-500 uppercase font-bold">Đã thuộc</span>
           </div>
         </div>
+
+        {state.duration && (
+          <div className="inline-flex items-center gap-2 bg-gray-50 px-4 py-2 rounded-full mb-6 border border-gray-200">
+             <Clock size={16} className="text-gray-400" />
+             <span className="text-gray-600 font-bold">Thời gian: {formatTime(state.duration)}</span>
+          </div>
+        )}
 
         <p className="text-lg text-gray-600 mb-6">
           {score === 100 ? "Tuyệt vời! Bé thuộc hết rồi!" : `Bé cần cố gắng thêm ${state.incorrect.length} chữ nữa nhé!`}

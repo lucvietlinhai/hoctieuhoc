@@ -1,25 +1,42 @@
+
 import React, { useState } from 'react';
 import { Button } from './Button';
-import { Calculator, BookOpen, Layers, Sparkles, LayoutGrid, Award, BookOpenText, GraduationCap, ExternalLink, ArrowLeft, Star, FileQuestion, BookX } from 'lucide-react';
+import { BookOpenText, GraduationCap, ArrowLeft, Star, Shapes, Calculator, ArrowUpDown, LayoutGrid, Table2, Timer, ClipboardList, Languages, Bot, Palette, Triangle } from 'lucide-react';
 import { motion, AnimatePresence, Variants } from 'framer-motion';
-import { VietnameseTopic } from '../types';
+import { VietnameseTopic, Student, MathTopic, EnglishTopic } from '../types';
 
 interface DashboardProps {
+  student: Student;
   onStartVietnamese: (topic: VietnameseTopic) => void;
   onStartQuiz: () => void;
-  missedWordsCount?: number;
+  onChangeUser: () => void;
+  onStartMath: (topic: MathTopic) => void;
+  onOpenMathTables: () => void;
+  onOpenMathReflex: () => void;
+  onStartExam: (examId: 1 | 2) => void;
+  onStartEnglish: (topic: EnglishTopic) => void;
 }
 
-type DashboardView = 'MAIN' | 'VIETNAMESE_MENU' | 'TOPIC_SELECTION' | 'SEMESTER_1_MENU';
+type DashboardView = 'MAIN' | 'VIETNAMESE_MENU' | 'MATH_MENU' | 'ENGLISH_MENU';
 
-export const Dashboard: React.FC<DashboardProps> = ({ onStartVietnamese, onStartQuiz, missedWordsCount = 0 }) => {
+export const Dashboard: React.FC<DashboardProps> = ({ 
+  student, 
+  onStartVietnamese, 
+  onStartQuiz, 
+  onChangeUser, 
+  onStartMath, 
+  onOpenMathTables, 
+  onOpenMathReflex, 
+  onStartExam,
+  onStartEnglish 
+}) => {
   const [currentView, setCurrentView] = useState<DashboardView>('MAIN');
 
-  // Animation variants for transitions
+  // Animation variants
   const containerVariants: Variants = {
-    enter: { opacity: 0, scale: 0.9, x: 50 },
-    center: { opacity: 1, scale: 1, x: 0, transition: { staggerChildren: 0.1, duration: 0.4 } },
-    exit: { opacity: 0, scale: 0.9, x: -50, transition: { duration: 0.3 } }
+    enter: { opacity: 0, x: 50 },
+    center: { opacity: 1, x: 0, transition: { staggerChildren: 0.1 } },
+    exit: { opacity: 0, x: -50 }
   };
 
   const itemVariants: Variants = {
@@ -33,77 +50,57 @@ export const Dashboard: React.FC<DashboardProps> = ({ onStartVietnamese, onStart
       case 'MAIN':
         return (
           <>
-            {/* Missed Words Review Button (Only shows if there are missed words) */}
-            {missedWordsCount > 0 && (
-               <motion.div variants={itemVariants} className="w-full max-w-[300px] aspect-square">
-                <Button 
-                  size="lg" 
-                  onClick={() => onStartVietnamese(VietnameseTopic.MISSED_WORDS)}
-                  className="!bg-kid-pink !text-white !border-[6px] !border-white/50 shadow-[0_12px_24px_rgba(247,37,133,0.4)] hover:shadow-[0_16px_32px_rgba(247,37,133,0.6)] !rounded-[48px] w-full h-full flex flex-col items-center justify-center gap-4 relative overflow-hidden group"
-                >
-                  <div className="absolute top-0 right-0 bg-red-500 text-white font-black text-lg px-4 py-1 rounded-bl-2xl z-10 animate-pulse">
-                     {missedWordsCount} từ
-                  </div>
-                  <div className="w-32 h-32 bg-white/20 rounded-full flex items-center justify-center shadow-inner mb-2 backdrop-blur-sm group-hover:scale-110 transition-transform duration-300">
-                     <BookX className="w-20 h-20 text-white drop-shadow-md" />
-                  </div>
-                  <div className="flex flex-col items-center">
-                    <span className="text-3xl font-black tracking-tight text-center leading-none">Ôn Lại <br/> Từ Chưa Thuộc</span>
-                    <span className="text-lg bg-white/20 px-4 py-1.5 rounded-full mt-3 font-bold backdrop-blur-sm whitespace-nowrap border-2 border-white/20">Cố lên nào!</span>
-                  </div>
-                </Button>
-              </motion.div>
-            )}
-
-            {/* Tiếng Việt Button */}
-            <motion.div variants={itemVariants} className="w-full max-w-[300px] aspect-square">
+            {/* Tiếng Việt Card */}
+            <motion.div variants={itemVariants} className="w-full max-w-[300px] aspect-[4/5]">
               <Button 
-                size="lg" 
                 onClick={() => setCurrentView('VIETNAMESE_MENU')}
-                className="!bg-gradient-to-br !from-kid-blue !to-cyan-500 !text-white !border-[6px] !border-white/50 shadow-[0_12px_24px_rgba(76,201,240,0.4)] hover:shadow-[0_16px_32px_rgba(76,201,240,0.6)] !rounded-[48px] w-full h-full flex flex-col items-center justify-center gap-4 relative overflow-hidden group"
+                className="!bg-gradient-to-b !from-kid-blue !to-blue-500 !text-white !border-[6px] !border-white/40 shadow-[0_12px_24px_rgba(59,130,246,0.3)] hover:scale-105 !rounded-[40px] w-full h-full flex flex-col items-center justify-center gap-6 relative overflow-hidden group p-0"
               >
-                <div className="absolute top-0 left-0 w-full h-full bg-white/10 opacity-0 group-hover:opacity-100 transition-opacity"></div>
-                <div className="w-32 h-32 bg-white/20 rounded-full flex items-center justify-center shadow-inner mb-2 backdrop-blur-sm group-hover:scale-110 transition-transform duration-300">
-                   <span className="text-8xl font-display font-black pt-4 drop-shadow-md">Aa</span>
+                <div className="absolute inset-0 bg-[radial-gradient(circle_at_30%_30%,rgba(255,255,255,0.2),transparent)]"></div>
+                <div className="w-32 h-32 bg-white/20 rounded-full flex items-center justify-center backdrop-blur-md shadow-inner border-2 border-white/30 group-hover:scale-110 transition-transform duration-500">
+                   <span className="text-8xl font-display font-black pt-4 drop-shadow-lg">Aa</span>
                 </div>
-                <div className="flex flex-col items-center">
-                  <span className="text-4xl font-black tracking-tight">Tiếng Việt</span>
-                  <span className="text-xl bg-white/20 px-6 py-2 rounded-full mt-3 font-black backdrop-blur-sm whitespace-nowrap border-2 border-white/20">Bắt đầu học ngay</span>
+                <div className="text-center z-10 px-4">
+                  <h2 className="text-3xl font-black mb-1 tracking-tight">Tiếng Việt</h2>
+                  <p className="text-blue-100 font-medium text-sm bg-blue-600/30 px-3 py-1 rounded-full">Học vần</p>
                 </div>
               </Button>
             </motion.div>
 
-            {/* Ôn tập kỳ 1 Button */}
-            <motion.div variants={itemVariants} className="w-full max-w-[300px] aspect-square">
+            {/* Toán Học Card */}
+            <motion.div variants={itemVariants} className="w-full max-w-[300px] aspect-[4/5]">
               <Button 
-                size="lg" 
-                onClick={() => setCurrentView('SEMESTER_1_MENU')}
-                className="!bg-gradient-to-br !from-kid-purple !to-fuchsia-600 !text-white !border-[6px] !border-white/50 shadow-[0_12px_24px_rgba(192,38,211,0.4)] hover:shadow-[0_16px_32px_rgba(192,38,211,0.6)] !rounded-[48px] w-full h-full flex flex-col items-center justify-center gap-4 relative overflow-hidden group"
+                onClick={() => setCurrentView('MATH_MENU')}
+                className="!bg-gradient-to-b !from-orange-400 !to-red-500 !text-white !border-[6px] !border-white/40 shadow-[0_12px_24px_rgba(249,115,22,0.3)] hover:scale-105 !rounded-[40px] w-full h-full flex flex-col items-center justify-center gap-6 relative overflow-hidden group p-0"
               >
-                <div className="absolute top-0 left-0 w-full h-full bg-white/10 opacity-0 group-hover:opacity-100 transition-opacity"></div>
-                <div className="w-32 h-32 bg-white/20 rounded-full flex items-center justify-center shadow-inner mb-2 backdrop-blur-sm group-hover:scale-110 transition-transform duration-300">
-                   <Star className="w-20 h-20 text-white drop-shadow-md fill-white/20" />
+                <div className="absolute inset-0 bg-[radial-gradient(circle_at_70%_30%,rgba(255,255,255,0.2),transparent)]"></div>
+                <div className="w-32 h-32 bg-white/20 rounded-full flex items-center justify-center backdrop-blur-md shadow-inner border-2 border-white/30 group-hover:scale-110 transition-transform duration-500">
+                   <div className="relative">
+                      <span className="text-7xl font-black absolute -top-10 -left-8 text-yellow-200">1</span>
+                      <span className="text-8xl font-black relative z-10 text-white drop-shadow-lg">2</span>
+                      <span className="text-7xl font-black absolute -bottom-8 -right-8 text-yellow-200">3</span>
+                   </div>
                 </div>
-                <div className="flex flex-col items-center">
-                  <span className="text-3xl font-black tracking-tight text-center leading-none">Ôn tập <br/> Học Kỳ 1</span>
-                  <span className="text-lg bg-white/20 px-4 py-1.5 rounded-full mt-3 font-bold backdrop-blur-sm whitespace-nowrap border-2 border-white/20">Tổng hợp kiến thức</span>
+                <div className="text-center z-10 px-4">
+                  <h2 className="text-3xl font-black mb-1 tracking-tight">Toán Học</h2>
+                  <p className="text-orange-100 font-medium text-sm bg-orange-600/30 px-3 py-1 rounded-full">Đếm & Hình</p>
                 </div>
               </Button>
             </motion.div>
 
-            {/* Toán Học Button (Disabled) */}
-            <motion.div variants={itemVariants} className="w-full max-w-[300px] aspect-square">
+             {/* English Card (New) */}
+            <motion.div variants={itemVariants} className="w-full max-w-[300px] aspect-[4/5]">
               <Button 
-                size="lg" 
-                disabled
-                className="!bg-white !text-gray-300 !border-[6px] !border-dashed !border-gray-300 shadow-none !rounded-[48px] w-full h-full flex flex-col items-center justify-center gap-4 cursor-not-allowed grayscale relative overflow-hidden opacity-80"
+                onClick={() => setCurrentView('ENGLISH_MENU')}
+                className="!bg-gradient-to-b !from-indigo-400 !to-purple-600 !text-white !border-[6px] !border-white/40 shadow-[0_12px_24px_rgba(124,58,237,0.3)] hover:scale-105 !rounded-[40px] w-full h-full flex flex-col items-center justify-center gap-6 relative overflow-hidden group p-0"
               >
-                <div className="w-32 h-32 bg-gray-100 rounded-full flex items-center justify-center mb-2">
-                   <Calculator className="w-20 h-20 text-gray-300" />
+                <div className="absolute inset-0 bg-[radial-gradient(circle_at_50%_50%,rgba(255,255,255,0.2),transparent)]"></div>
+                <div className="w-32 h-32 bg-white/20 rounded-full flex items-center justify-center backdrop-blur-md shadow-inner border-2 border-white/30 group-hover:scale-110 transition-transform duration-500">
+                   <Languages size={64} className="text-white drop-shadow-lg" />
                 </div>
-                <div className="flex flex-col items-center">
-                  <span className="text-4xl font-black tracking-tight">Toán Học</span>
-                  <span className="text-xl bg-gray-100 text-gray-400 px-6 py-2 rounded-full mt-3 font-black">Sắp ra mắt</span>
+                <div className="text-center z-10 px-4">
+                  <h2 className="text-3xl font-black mb-1 tracking-tight">English</h2>
+                  <p className="text-indigo-100 font-medium text-sm bg-indigo-600/30 px-3 py-1 rounded-full">STEM Robotics</p>
                 </div>
               </Button>
             </motion.div>
@@ -112,186 +109,176 @@ export const Dashboard: React.FC<DashboardProps> = ({ onStartVietnamese, onStart
 
       case 'VIETNAMESE_MENU':
         return (
-          <>
-            <motion.div variants={itemVariants} className="w-full max-w-[300px] aspect-square">
-              <Button 
-                size="lg" 
-                onClick={() => setCurrentView('TOPIC_SELECTION')}
-                className="!bg-kid-green !text-white !border-[6px] !border-white/30 !rounded-[48px] w-full h-full flex flex-col items-center justify-center gap-4 shadow-[0_12px_0_#15803d] hover:brightness-110 active:translate-y-2 active:shadow-none transition-all group"
-              >
-                <div className="w-32 h-32 bg-white/20 rounded-full flex items-center justify-center group-hover:scale-110 transition-transform">
-                   <GraduationCap className="w-20 h-20" />
-                </div>
-                <div className="flex flex-col items-center">
-                  <span className="text-3xl font-black text-center leading-tight">Ôn tập <br/> học âm vần</span>
-                  <span className="text-lg bg-black/10 px-4 py-1 rounded-full mt-2">Flashcard</span>
-                </div>
+          <div className="w-full max-w-4xl grid grid-cols-1 md:grid-cols-2 gap-4">
+            <motion.div variants={itemVariants} className="md:col-span-2 mb-2">
+               <Button onClick={() => setCurrentView('MAIN')} className="!bg-white/50 !text-gray-600 hover:!bg-white mb-4 !px-4 !py-2 !h-auto !text-sm">
+                  <ArrowLeft size={16} className="mr-2"/> Quay lại
+               </Button>
+               <h2 className="text-3xl font-black text-kid-blue mb-2 text-center md:text-left pl-2">Chọn Bài Học Tiếng Việt</h2>
+            </motion.div>
+            {/* Vietnamese buttons... (kept same) */}
+            <motion.div variants={itemVariants}>
+              <Button size="lg" onClick={() => onStartVietnamese(VietnameseTopic.PHAN_AM)} className="!bg-kid-green w-full h-32 text-2xl justify-between px-8 !rounded-3xl shadow-[0_8px_0_#15803d]">
+                <span>Phần Âm</span>
+                <BookOpenText size={40} className="opacity-80" />
               </Button>
             </motion.div>
-
-            <motion.div variants={itemVariants} className="w-full max-w-[300px] aspect-square">
-              <Button 
-                size="lg" 
-                onClick={() => window.open('https://www.hoc10.vn/doc-sach/tieng-viet-1-1/1/1/6/', '_blank')}
-                className="!bg-kid-orange !bg-orange-500 !text-white !border-[6px] !border-white/30 !rounded-[48px] w-full h-full flex flex-col items-center justify-center gap-4 shadow-[0_12px_0_#c2410c] hover:brightness-110 active:translate-y-2 active:shadow-none transition-all group"
-              >
-                <div className="w-32 h-32 bg-white/20 rounded-full flex items-center justify-center group-hover:scale-110 transition-transform">
-                   <BookOpenText className="w-20 h-20" />
-                </div>
-                <div className="flex flex-col items-center">
-                  <span className="text-3xl font-black">SGK Online</span>
-                  <span className="text-xl bg-black/10 px-4 py-1 rounded-full mt-2 flex items-center gap-2">
-                    Mở sách <ExternalLink size={18}/>
-                  </span>
-                </div>
+            <motion.div variants={itemVariants}>
+              <Button size="lg" onClick={() => onStartVietnamese(VietnameseTopic.VAN_KY_1)} className="!bg-kid-purple w-full h-32 text-2xl justify-between px-8 !rounded-3xl shadow-[0_8px_0_#7e22ce]">
+                <span>Vần Kì 1</span>
+                <GraduationCap size={40} className="opacity-80" />
               </Button>
             </motion.div>
-          </>
+            <motion.div variants={itemVariants}>
+              <Button size="lg" onClick={() => onStartVietnamese(VietnameseTopic.VAN_KY_2)} className="!bg-kid-pink w-full h-32 text-2xl justify-between px-8 !rounded-3xl shadow-[0_8px_0_#be185d]">
+                <span>Vần Kì 2</span>
+                <Star size={40} className="opacity-80" />
+              </Button>
+            </motion.div>
+            <motion.div variants={itemVariants}>
+              <Button size="lg" onClick={onStartQuiz} className="!bg-kid-yellow !text-orange-900 w-full h-32 text-2xl justify-between px-8 !rounded-3xl shadow-[0_8px_0_#d97706]">
+                <span>Trò Chơi Ôn Tập</span>
+                <span className="text-5xl">🎮</span>
+              </Button>
+            </motion.div>
+          </div>
         );
 
-      case 'SEMESTER_1_MENU':
+      case 'MATH_MENU':
         return (
-          <>
-            {/* Fill in the Blank Quiz Option - Centered as it is the only option now */}
-            <motion.div variants={itemVariants} className="w-full max-w-[300px] aspect-square">
-              <Button 
-                size="lg" 
-                onClick={onStartQuiz}
-                className="!bg-kid-blue !text-white !border-[6px] !border-white/30 !rounded-[48px] w-full h-full flex flex-col items-center justify-center gap-4 shadow-[0_12px_0_#0284c7] hover:brightness-110 active:translate-y-2 active:shadow-none transition-all group"
-              >
-                <div className="w-32 h-32 bg-white/20 rounded-full flex items-center justify-center group-hover:scale-110 transition-transform">
-                   <FileQuestion className="w-20 h-20" />
-                </div>
-                <div className="flex flex-col items-center">
-                  <span className="text-3xl font-black text-center leading-tight">Bài tập <br/> điền từ</span>
-                  <span className="text-lg bg-black/10 px-4 py-1 rounded-full mt-2">Trắc nghiệm vui</span>
-                </div>
+          <div className="w-full max-w-4xl grid grid-cols-1 md:grid-cols-2 gap-4 pb-20">
+            <motion.div variants={itemVariants} className="md:col-span-2 mb-2">
+               <Button onClick={() => setCurrentView('MAIN')} className="!bg-white/50 !text-gray-600 hover:!bg-white mb-4 !px-4 !py-2 !h-auto !text-sm">
+                  <ArrowLeft size={16} className="mr-2"/> Quay lại
+               </Button>
+               <h2 className="text-3xl font-black text-orange-500 mb-2 text-center md:text-left pl-2">Chọn Bài Học Toán</h2>
+            </motion.div>
+            {/* Math buttons... (kept same) */}
+            <motion.div variants={itemVariants} className="md:col-span-2">
+              <div className="bg-white/60 p-4 rounded-[2rem] border-2 border-white mb-4">
+                 <h3 className="font-bold text-gray-500 uppercase tracking-widest text-sm mb-3 ml-2 flex items-center gap-2">
+                    <ClipboardList size={16} /> Luyện Đề Thi Cuối Kỳ
+                 </h3>
+                 <div className="grid grid-cols-2 gap-4">
+                    <Button onClick={() => onStartExam(1)} className="!bg-white !text-kid-blue !border-2 !border-kid-blue/20 hover:!border-kid-blue shadow-sm !rounded-2xl h-20 text-xl">📝 Đề Số 1</Button>
+                    <Button onClick={() => onStartExam(2)} className="!bg-white !text-kid-purple !border-2 !border-kid-purple/20 hover:!border-kid-purple shadow-sm !rounded-2xl h-20 text-xl">📝 Đề Số 2</Button>
+                 </div>
+              </div>
+            </motion.div>
+            <motion.div variants={itemVariants}>
+               <Button size="lg" onClick={onOpenMathTables} className="!bg-gradient-to-r !from-pink-500 !to-rose-400 w-full h-32 text-2xl justify-between px-8 !rounded-3xl shadow-[0_8px_0_#be123c] !text-white border-2 border-white/20">
+                <div className="text-left"><span className="block font-black text-2xl">Bảng Cộng Trừ</span><span className="text-sm opacity-90 font-normal">Học thuộc nhanh</span></div>
+                <Table2 size={40} className="opacity-80" />
               </Button>
             </motion.div>
-          </>
+            <motion.div variants={itemVariants}>
+               <Button size="lg" onClick={onOpenMathReflex} className="!bg-gradient-to-r !from-indigo-500 !to-violet-500 w-full h-32 text-2xl justify-between px-8 !rounded-3xl shadow-[0_8px_0_#4338ca] !text-white border-2 border-white/20">
+                <div className="text-left"><span className="block font-black text-2xl">Thử Thách Tốc Độ</span><span className="text-sm opacity-90 font-normal">Luyện phản xạ 60s</span></div>
+                <Timer size={40} className="opacity-80 animate-pulse" />
+              </Button>
+            </motion.div>
+            <motion.div variants={itemVariants}><Button size="lg" onClick={() => onStartMath(MathTopic.GEOMETRY)} className="!bg-emerald-400 w-full h-32 text-xl md:text-2xl justify-between px-8 !rounded-3xl shadow-[0_8px_0_#059669]"><div className="text-left"><span className="block font-black">Hình & Vị Trí</span><span className="text-sm opacity-90 font-normal">Vuông, Tròn, Trái, Phải</span></div><Shapes size={40} className="opacity-80" /></Button></motion.div>
+            <motion.div variants={itemVariants}><Button size="lg" onClick={() => onStartMath(MathTopic.NUMBERS)} className="!bg-sky-400 w-full h-32 text-xl md:text-2xl justify-between px-8 !rounded-3xl shadow-[0_8px_0_#0284c7]"><div className="text-left"><span className="block font-black">Số & So Sánh</span><span className="text-sm opacity-90 font-normal">Lớn, Bé, Sắp xếp</span></div><ArrowUpDown size={40} className="opacity-80" /></Button></motion.div>
+            <motion.div variants={itemVariants}><Button size="lg" onClick={() => onStartMath(MathTopic.CALCULATION)} className="!bg-rose-400 w-full h-32 text-xl md:text-2xl justify-between px-8 !rounded-3xl shadow-[0_8px_0_#e11d48]"><div className="text-left"><span className="block font-black">Phép Tính</span><span className="text-sm opacity-90 font-normal">Cộng, Trừ 10</span></div><Calculator size={40} className="opacity-80" /></Button></motion.div>
+            <motion.div variants={itemVariants}><Button size="lg" onClick={() => onStartMath(MathTopic.MIXED)} className="!bg-gray-400 w-full h-32 text-xl md:text-2xl justify-between px-8 !rounded-3xl shadow-[0_8px_0_#4b5563]"><div className="text-left"><span className="block font-black">Tổng Hợp</span><span className="text-sm opacity-90 font-normal">Tất cả các dạng</span></div><LayoutGrid size={40} className="opacity-80" /></Button></motion.div>
+          </div>
         );
 
-      case 'TOPIC_SELECTION':
+      case 'ENGLISH_MENU':
         return (
-          <div className="w-full max-w-2xl grid grid-cols-1 md:grid-cols-2 gap-4">
-             <motion.div variants={itemVariants} className="md:col-span-2">
-                <Button 
-                  onClick={() => onStartVietnamese(VietnameseTopic.PHAN_AM)}
-                  className="!bg-kid-blue !rounded-3xl h-24 text-2xl !border-4 !border-white/20 shadow-[0_8px_0_#0284c7] hover:brightness-110 w-full"
-                >
-                   <Layers className="w-8 h-8 mr-3" /> Phần Âm (Cơ bản)
-                </Button>
-             </motion.div>
+          <div className="w-full max-w-4xl grid grid-cols-1 md:grid-cols-2 gap-4 pb-20">
+            <motion.div variants={itemVariants} className="md:col-span-2 mb-2">
+               <Button onClick={() => setCurrentView('MAIN')} className="!bg-white/50 !text-gray-600 hover:!bg-white mb-4 !px-4 !py-2 !h-auto !text-sm">
+                  <ArrowLeft size={16} className="mr-2"/> Quay lại
+               </Button>
+               <h2 className="text-3xl font-black text-indigo-600 mb-2 text-center md:text-left pl-2">English STEM Robotics</h2>
+            </motion.div>
 
-             <motion.div variants={itemVariants}>
-                <Button 
-                  onClick={() => onStartVietnamese(VietnameseTopic.VAN_KY_1)}
-                  className="!bg-kid-yellow !text-white !rounded-3xl h-32 text-xl !border-4 !border-white/20 shadow-[0_8px_0_#b45309] flex-col hover:brightness-110 w-full"
-                >
-                   <BookOpen className="w-10 h-10 mb-2" /> Vần Kỳ 1
-                </Button>
-             </motion.div>
+            <motion.div variants={itemVariants}>
+              <Button size="lg" onClick={() => onStartEnglish(EnglishTopic.UNIT_0)} className="!bg-gray-600 w-full h-32 text-xl justify-between px-8 !rounded-3xl shadow-[0_8px_0_#374151] !text-white">
+                <div className="text-left">
+                  <span className="block font-black">Unit 0: Intro</span>
+                  <span className="text-sm opacity-90 font-normal">Robot Blocks, Numbers</span>
+                </div>
+                <Bot size={40} className="opacity-80" />
+              </Button>
+            </motion.div>
 
-             <motion.div variants={itemVariants}>
-                <Button 
-                  onClick={() => onStartVietnamese(VietnameseTopic.VAN_KY_2)}
-                  className="!bg-kid-pink !rounded-3xl h-32 text-xl !border-4 !border-white/20 shadow-[0_8px_0_#be185d] flex-col hover:brightness-110 w-full"
-                >
-                   <Sparkles className="w-10 h-10 mb-2" /> Vần Kỳ 2
-                </Button>
-             </motion.div>
+            <motion.div variants={itemVariants}>
+              <Button size="lg" onClick={() => onStartEnglish(EnglishTopic.UNIT_1)} className="!bg-teal-500 w-full h-32 text-xl justify-between px-8 !rounded-3xl shadow-[0_8px_0_#14b8a6] !text-white">
+                <div className="text-left">
+                  <span className="block font-black">Unit 1: Colours</span>
+                  <span className="text-sm opacity-90 font-normal">Red, Green, Blue...</span>
+                </div>
+                <Palette size={40} className="opacity-80" />
+              </Button>
+            </motion.div>
 
-             <motion.div variants={itemVariants} className="md:col-span-2 mt-2">
-                <Button 
-                  onClick={() => onStartVietnamese(VietnameseTopic.ALL)}
-                  className="!bg-kid-purple !rounded-3xl h-20 text-xl !border-4 !border-white/20 shadow-[0_8px_0_#581c87] hover:brightness-110 w-full"
-                >
-                   <LayoutGrid className="w-6 h-6 mr-2" /> Ôn tập tất cả
-                </Button>
-             </motion.div>
+            <motion.div variants={itemVariants}>
+              <Button size="lg" onClick={() => onStartEnglish(EnglishTopic.UNIT_2)} className="!bg-orange-500 w-full h-32 text-xl justify-between px-8 !rounded-3xl shadow-[0_8px_0_#f97316] !text-white">
+                <div className="text-left">
+                  <span className="block font-black">Unit 2: Shapes</span>
+                  <span className="text-sm opacity-90 font-normal">Triangle, Circle, Square</span>
+                </div>
+                <Triangle size={40} className="opacity-80" />
+              </Button>
+            </motion.div>
+
+            <motion.div variants={itemVariants}>
+              <Button size="lg" onClick={() => onStartEnglish(EnglishTopic.UNIT_3)} className="!bg-red-600 w-full h-32 text-xl justify-between px-8 !rounded-3xl shadow-[0_8px_0_#dc2626] !text-white">
+                <div className="text-left">
+                  <span className="block font-black">Unit 3: Christmas</span>
+                  <span className="text-sm opacity-90 font-normal">Santa, Tree, Reindeer</span>
+                </div>
+                <span className="text-4xl">🎄</span>
+              </Button>
+            </motion.div>
+
+            <motion.div variants={itemVariants} className="md:col-span-2">
+              <Button size="lg" onClick={() => onStartEnglish(EnglishTopic.REVIEW)} className="!bg-indigo-600 w-full h-24 text-xl justify-between px-8 !rounded-3xl shadow-[0_8px_0_#4f46e5] !text-white">
+                <div className="text-left">
+                  <span className="block font-black">General Review (Ôn Tập Chung)</span>
+                  <span className="text-sm opacity-90 font-normal">Practice Q&A: What's your name?...</span>
+                </div>
+                <ClipboardList size={40} className="opacity-80" />
+              </Button>
+            </motion.div>
           </div>
         );
     }
   };
 
-  const getTitle = () => {
-    switch(currentView) {
-      case 'MAIN': return "Lớp học vui nhộn \n 1A16";
-      case 'VIETNAMESE_MENU': return "Tiếng Việt";
-      case 'TOPIC_SELECTION': return "Chọn Bài Học";
-      case 'SEMESTER_1_MENU': return "Ôn Tập Kỳ 1";
-    }
-  };
-
   return (
-    <div className="min-h-screen bg-sky-100 flex flex-col items-center justify-center p-6 relative overflow-hidden">
-      
-      {/* Game Background Pattern */}
-      <div className="absolute inset-0 z-0 opacity-40 pointer-events-none" 
-           style={{ 
-             backgroundImage: 'radial-gradient(#4CC9F0 2px, transparent 2px), radial-gradient(#4CC9F0 2px, transparent 2px)',
-             backgroundSize: '40px 40px',
-             backgroundPosition: '0 0, 20px 20px' 
-           }}>
-      </div>
+    <div className="min-h-screen bg-kid-bg flex flex-col relative overflow-x-hidden">
+      {/* Header */}
+      <header className="px-6 py-4 flex justify-between items-center bg-white/60 backdrop-blur-md sticky top-0 z-20 border-b border-white">
+        <div className="flex items-center gap-3">
+           <div className={`w-12 h-12 rounded-full ${student.avatarColor} flex items-center justify-center text-2xl shadow-sm border-2 border-white`}>
+             {student.icon}
+           </div>
+           <div>
+             <p className="text-xs text-gray-500 font-bold uppercase">Học sinh</p>
+             <h2 className="text-xl font-black text-gray-800 leading-none">{student.name}</h2>
+           </div>
+        </div>
+        <div className="opacity-0 pointer-events-none">
+           <Button variant="secondary" size="sm" onClick={onChangeUser}>Đổi bé</Button>
+        </div>
+      </header>
 
-      {/* Decorative Blobs */}
-      <div className="absolute top-[-10%] left-[-10%] w-[60vh] h-[60vh] bg-kid-yellow/20 rounded-full blur-3xl animate-wiggle"></div>
-      <div className="absolute bottom-[-10%] right-[-10%] w-[60vh] h-[60vh] bg-kid-pink/20 rounded-full blur-3xl animate-wiggle" style={{ animationDelay: '2s' }}></div>
-
-      {/* Top Right Achievements Button */}
-      <motion.button 
-        whileHover={{ scale: 1.1, rotate: 10 }}
-        whileTap={{ scale: 0.9 }}
-        className="absolute top-6 right-6 z-20 w-16 h-16 bg-white border-4 border-kid-yellow rounded-full shadow-[0_4px_0_#eab308] flex items-center justify-center group active:translate-y-1 active:shadow-none transition-all"
-      >
-         <Award className="w-8 h-8 text-kid-yellow fill-kid-yellow group-hover:animate-wiggle" />
-      </motion.button>
-
-      {/* Back Button (Only for sub-menus) */}
-      <AnimatePresence>
-        {currentView !== 'MAIN' && (
-          <motion.button
-            initial={{ x: -50, opacity: 0 }}
-            animate={{ x: 0, opacity: 1 }}
-            exit={{ x: -50, opacity: 0 }}
-            onClick={() => setCurrentView(currentView === 'TOPIC_SELECTION' ? 'VIETNAMESE_MENU' : 'MAIN')}
-            className="absolute top-6 left-6 z-20 w-14 h-14 bg-white border-4 border-kid-blue rounded-2xl shadow-[0_4px_0_#0284c7] flex items-center justify-center text-kid-blue hover:bg-gray-50 active:translate-y-1 active:shadow-none transition-all"
-          >
-            <ArrowLeft size={32} strokeWidth={3} />
-          </motion.button>
-        )}
-      </AnimatePresence>
-
-      {/* Dynamic Title */}
-      <div className="text-center mb-10 relative z-10 min-h-[120px] flex items-end justify-center">
-        <motion.div 
-          key={currentView}
-          initial={{ y: -20, opacity: 0 }}
-          animate={{ y: 0, opacity: 1 }}
-          exit={{ y: 20, opacity: 0 }}
-          transition={{ duration: 0.3 }}
-        >
-          <h1 className="text-5xl md:text-7xl font-display font-black text-transparent bg-clip-text bg-gradient-to-r from-kid-purple via-kid-pink to-kid-blue drop-shadow-[0_4px_0_rgba(255,255,255,1)] p-2 tracking-tight whitespace-pre-line leading-tight">
-            {getTitle()}
-          </h1>
-        </motion.div>
-      </div>
-
-      {/* Main Content Area - View Transition */}
-      <AnimatePresence mode="wait">
-        <motion.div 
-          key={currentView}
-          variants={containerVariants}
-          initial="enter"
-          animate="center"
-          exit="exit"
-          className="flex flex-col md:flex-row gap-8 w-full max-w-6xl z-10 justify-center items-center flex-wrap"
-        >
-          {renderContent()}
-        </motion.div>
-      </AnimatePresence>
-
+      {/* Main Content */}
+      <main className="flex-1 flex flex-col items-center justify-center p-6 relative">
+         <motion.div
+           key={currentView}
+           variants={containerVariants}
+           initial="enter"
+           animate="center"
+           exit="exit"
+           className={`flex flex-wrap items-center justify-center gap-8 w-full ${currentView === 'MAIN' ? 'flex-row' : ''}`}
+         >
+            {renderContent()}
+         </motion.div>
+      </main>
     </div>
   );
 };

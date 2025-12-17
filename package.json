@@ -14,7 +14,8 @@
     "react-dom": "^19.2.0",
     "@google/genai": "^1.30.0",
     "lucide-react": "^0.555.0",
-    "canvas-confetti": "^1.9.4"
+    "canvas-confetti": "^1.9.4",
+    "firebase": "^12.6.0"
   },
   "devDependencies": {
     "@types/node": "^22.14.0",

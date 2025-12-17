@@ -4,6 +4,11 @@ import { motion, HTMLMotionProps } from 'framer-motion';
 interface ButtonProps extends HTMLMotionProps<"button"> {
   variant?: 'primary' | 'success' | 'danger' | 'secondary';
   size?: 'sm' | 'md' | 'lg';
+  children?: React.ReactNode;
+  className?: string;
+  onClick?: React.MouseEventHandler<HTMLButtonElement>;
+  type?: "button" | "submit" | "reset";
+  disabled?: boolean;
 }
 
 export const Button: React.FC<ButtonProps> = ({ 

@@ -2,7 +2,7 @@ import React, { useState, useEffect, useRef } from 'react';
 import { StudySessionState, PhonicsCard } from '../types';
 import { Flashcard, FlashcardHandle } from './Flashcard';
 import { Button } from './Button';
-import { ArrowLeft, Check, X, Trophy, Star, ThumbsUp } from 'lucide-react';
+import { ArrowLeft, Check, X, Trophy, Star, ThumbsUp, Clock } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
 import confetti from 'canvas-confetti';
 
@@ -17,6 +17,11 @@ export const StudySession: React.FC<StudySessionProps> = ({ cards, onFinish, onE
   const [correct, setCorrect] = useState<PhonicsCard[]>([]);
   const [incorrect, setIncorrect] = useState<PhonicsCard[]>([]);
   const [feedback, setFeedback] = useState<'correct' | 'incorrect' | null>(null);
+  
+  // Timer State
+  const [startTime] = useState<number>(Date.now());
+  const [currentTime, setCurrentTime] = useState<number>(0);
+  const timerRef = useRef<number | null>(null);
   
   const flashcardRef = useRef<FlashcardHandle>(null);
 
@@ -35,6 +40,24 @@ export const StudySession: React.FC<StudySessionProps> = ({ cards, onFinish, onE
     window.addEventListener('keydown', handleKeyDown);
     return () => window.removeEventListener('keydown', handleKeyDown);
   }, [queue.length]);
+
+  // Timer Logic
+  useEffect(() => {
+    timerRef.current = window.setInterval(() => {
+      setCurrentTime(Date.now() - startTime);
+    }, 1000);
+
+    return () => {
+      if (timerRef.current) clearInterval(timerRef.current);
+    };
+  }, [startTime]);
+
+  const formatTime = (ms: number) => {
+    const totalSeconds = Math.floor(ms / 1000);
+    const minutes = Math.floor(totalSeconds / 60);
+    const seconds = totalSeconds % 60;
+    return `${minutes}:${seconds.toString().padStart(2, '0')}`;
+  };
 
   const handleSwipe = (direction: 'left' | 'right') => {
     const currentCard = queue[0];
@@ -63,13 +86,17 @@ export const StudySession: React.FC<StudySessionProps> = ({ cards, onFinish, onE
     setQueue(newQueue);
 
     if (newQueue.length === 0) {
+      // Stop timer
+      if (timerRef.current) clearInterval(timerRef.current);
+      
       // Delay slightly to let the last card animate out
       setTimeout(() => {
         onFinish({
           correct: direction === 'right' ? [...correct, currentCard] : correct,
           incorrect: direction === 'left' ? [...incorrect, currentCard] : incorrect,
           remaining: [],
-          isFinished: true
+          isFinished: true,
+          duration: Date.now() - startTime
         });
       }, 500);
     }
@@ -102,7 +129,7 @@ export const StudySession: React.FC<StudySessionProps> = ({ cards, onFinish, onE
         </button>
         
         {/* Progress Bar */}
-        <div className="mx-4 w-48 sm:w-64">
+        <div className="mx-4 flex-1 max-w-sm">
            <div className="flex justify-between text-xs font-black text-kid-blue mb-1 uppercase tracking-wider">
              <span>Tiến độ</span>
              <span className="text-base">{completedCount}/{cards.length}</span>
@@ -117,8 +144,12 @@ export const StudySession: React.FC<StudySessionProps> = ({ cards, onFinish, onE
            </div>
         </div>
 
-        <div className="w-12 h-12 bg-white border-2 border-gray-100 rounded-2xl shadow-[0_4px_0_rgba(0,0,0,0.1)] flex items-center justify-center text-kid-yellow">
-           <Trophy className="w-6 h-6 fill-current" />
+        {/* Timer Display */}
+        <div className="bg-white/90 backdrop-blur px-3 py-2 rounded-xl border-2 border-white shadow-sm flex items-center gap-2">
+           <Clock size={18} className="text-kid-purple" />
+           <span className="font-mono font-bold text-kid-purple text-lg min-w-[50px] text-center">
+             {formatTime(currentTime)}
+           </span>
         </div>
       </div>
 

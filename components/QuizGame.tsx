@@ -7,7 +7,7 @@ import { motion, AnimatePresence } from 'framer-motion';
 import confetti from 'canvas-confetti';
 
 interface QuizGameProps {
-  onExit: () => void;
+  onExit: (score?: number) => void;
 }
 
 const BG_THEMES = [
@@ -68,7 +68,7 @@ export const QuizGame: React.FC<QuizGameProps> = ({ onExit }) => {
 
   const startNewGame = () => {
     setGameState({
-      questions: generateQuiz(10), // Generate 10 questions
+      questions: generateQuiz(20), // Increased to 20 questions
       currentIndex: 0,
       score: 0,
       isFinished: false
@@ -120,7 +120,7 @@ export const QuizGame: React.FC<QuizGameProps> = ({ onExit }) => {
           isFinished: true
         }));
         // Final celebration confetti if score is high
-        if ((isCorrect ? gameState.score + 1 : gameState.score) > 7) {
+        if ((isCorrect ? gameState.score + 1 : gameState.score) > 15) {
             triggerFinalConfetti();
         }
       }
@@ -157,7 +157,7 @@ export const QuizGame: React.FC<QuizGameProps> = ({ onExit }) => {
   const currentBgTheme = BG_THEMES[gameState.currentIndex % BG_THEMES.length];
 
   if (gameState.isFinished) {
-    const isHighScore = gameState.score >= 8;
+    const isHighScore = gameState.score >= 16; // Adjusted for 20 questions
     return (
       <div className="flex flex-col items-center justify-center min-h-screen bg-[radial-gradient(ellipse_at_center,_var(--tw-gradient-stops))] from-indigo-300 via-purple-300 to-pink-300 p-6 relative overflow-hidden">
         
@@ -215,7 +215,7 @@ export const QuizGame: React.FC<QuizGameProps> = ({ onExit }) => {
             <Button onClick={startNewGame} className="!bg-kid-green !rounded-3xl text-2xl md:text-3xl font-black h-20 md:h-24 shadow-[0_8px_0_#15803d] hover:scale-105 transition-transform">
                <RefreshCcw className="w-8 h-8 md:w-10 md:h-10 mr-2" /> Chơi lại
             </Button>
-            <Button onClick={onExit} className="!bg-kid-blue !rounded-3xl text-2xl md:text-3xl font-black h-20 md:h-24 shadow-[0_8px_0_#0284c7] hover:scale-105 transition-transform">
+            <Button onClick={() => onExit(gameState.score)} className="!bg-kid-blue !rounded-3xl text-2xl md:text-3xl font-black h-20 md:h-24 shadow-[0_8px_0_#0284c7] hover:scale-105 transition-transform">
                <Home className="w-8 h-8 md:w-10 md:h-10 mr-2" /> Trang chủ
             </Button>
           </div>
@@ -257,12 +257,10 @@ export const QuizGame: React.FC<QuizGameProps> = ({ onExit }) => {
 
       {/* Header */}
       <div className="p-4 flex items-center justify-between z-20 pt-safe-top">
-        <button onClick={onExit} className="w-16 h-16 bg-white border-4 border-white/50 rounded-2xl shadow-lg flex items-center justify-center hover:scale-110 transition-transform active:scale-95">
+        <button onClick={() => onExit()} className="w-16 h-16 bg-white border-4 border-white/50 rounded-2xl shadow-lg flex items-center justify-center hover:scale-110 transition-transform active:scale-95">
           <ArrowLeft className="w-8 h-8 text-kid-blue" strokeWidth={4} />
         </button>
         
-        {/* Removed Timer from Header */}
-
         <div className="bg-white/80 backdrop-blur px-8 py-4 rounded-full shadow-lg border-4 border-white">
            <span className="font-black text-3xl text-kid-purple tracking-widest">CÂU {gameState.currentIndex + 1} / {gameState.questions.length}</span>
         </div>

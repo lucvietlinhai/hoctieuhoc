@@ -1,4 +1,4 @@
-import { PhonicsCard, VietnameseTopic, QuizQuestion } from './types';
+import { PhonicsCard, VietnameseTopic, QuizQuestion, Student } from './types';
 
 const CARD_COLORS = [
   'bg-red-400', 'bg-orange-400', 'bg-amber-400', 'bg-yellow-400', 
@@ -8,6 +8,28 @@ const CARD_COLORS = [
 ];
 
 export const getRandomColor = () => CARD_COLORS[Math.floor(Math.random() * CARD_COLORS.length)];
+
+// --- Student Data (Sample) ---
+const AVATAR_COLORS = [
+  'bg-kid-blue', 'bg-kid-pink', 'bg-kid-yellow', 'bg-kid-green', 'bg-kid-purple', 'bg-orange-400'
+];
+
+const AVATAR_ICONS = ['🐶', '🐱', '🐭', '🐹', '🐰', 'fox', 'bear', 'panda', '🐯', '🦁', '🐮', '🐷'];
+
+// Bạn có thể thay thế danh sách này bằng danh sách lớp thực tế
+const SAMPLE_STUDENT_NAMES = [
+  "Minh An", "Bảo Ngọc", "Gia Huy", "Tuấn Kiệt", 
+  "Khánh Vy", "Thảo Nhi", "Đức Minh", "Hoàng Bách",
+  "Yến Nhi", "Quang Hải", "Bảo Châu", "Hải Đăng"
+];
+
+export const CLASS_LIST: Student[] = SAMPLE_STUDENT_NAMES.map((name, index) => ({
+  id: `std-${index}`,
+  name: name,
+  avatarColor: AVATAR_COLORS[index % AVATAR_COLORS.length],
+  icon: AVATAR_ICONS[index % AVATAR_ICONS.length] || '🎓'
+}));
+
 
 // --- Data Sections provided by user ---
 
